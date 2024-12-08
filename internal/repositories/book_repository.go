@@ -1,14 +1,14 @@
 package repositories
 
 import (
-	"database/sql"
+	"github.com/jmoiron/sqlx"
 
 	"github.com/Gierdiaz/Book/internal/models"
 )
 
 
 type BookRepository struct {
-	DB *sql.DB
+	DB *sqlx.DB
 }
 
 func (r *BookRepository) Create(book *models.Book) error {
