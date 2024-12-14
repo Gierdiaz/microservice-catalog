@@ -12,11 +12,13 @@ import (
 func InitRouter(config *config.Config, db *sqlx.DB) *gin.Engine {
 	router := gin.Default()
 
+	router.SetTrustedProxies([]string{"172.18.0.4"})
+
 	bookHandler := setup.SetupBook(db)
 
 	v1 := router.Group("/v1")
 	{
-		v1.GET("/test", func(c *gin.Context) {
+		v1.GET("/teste", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{
 				"message": "Hello, World!",
 				"status":  http.StatusOK,
