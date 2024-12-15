@@ -1,8 +1,9 @@
 package endpoints
 
 import (
-	"github.com/jmoiron/sqlx"
 	"net/http"
+
+	"github.com/jmoiron/sqlx"
 
 	"github.com/Gierdiaz/Book/config"
 	"github.com/Gierdiaz/Book/internal/setup"
@@ -18,7 +19,7 @@ func InitRouter(config *config.Config, db *sqlx.DB) *gin.Engine {
 
 	v1 := router.Group("/v1")
 	{
-		v1.GET("/teste", func(c *gin.Context) {
+		v1.GET("/health", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{
 				"message": "Hello, World!",
 				"status":  http.StatusOK,

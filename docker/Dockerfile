@@ -3,6 +3,9 @@ FROM golang:1.23.4-alpine AS dev
 
 WORKDIR /go/src/app
 
+RUN go install github.com/air-verse/air@latest
+
+
 RUN apk add --no-cache bash curl git && \
     curl -sSfL https://raw.githubusercontent.com/cosmtrek/air/master/install.sh | sh -s && \
     mv ./bin/air /usr/local/bin/

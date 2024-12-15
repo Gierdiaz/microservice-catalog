@@ -6,8 +6,6 @@ services:
       target: dev
     container_name: microservice_catalog
     restart: always
-    ports:
-      - 8080:8080
     environment:
       - GIN_MODE=$GIN_MODE
       - APP_PORT=$APP_PORT
@@ -20,10 +18,16 @@ services:
       - .env
     volumes:
       - .:/go/src/app
+      - ~/.air:/root/.air
     depends_on:
       - postgres_db
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   nginx:
     image: nginx:latest
@@ -32,7 +36,8 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf 
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./logs/nginx:/var/log/nginx
     depends_on:
       - app
     networks:

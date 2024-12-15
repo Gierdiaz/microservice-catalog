@@ -7,13 +7,13 @@ tmp_dir = "tmp"
   bin = "./tmp/server.exe"
   cmd = "go build -o ./tmp/server.exe cmd/main.go"
   delay = 1000
-  exclude_dir = ["assets", "tmp", "vendor", "testdata"]
+  exclude_dir = ["assets", "tmp", "vendor", "testdata", "logs", "docker", "node_modules"]
   exclude_file = []
   exclude_regex = ["_test.go"]
   exclude_unchanged = false
   follow_symlink = false
   full_bin = ""
-  include_dir = []
+  include_dir = ["**/*.go", "config/**/*", "cmd/**/*", "internal/**/*"]
   include_ext = ["go", "tpl", "tmpl", "html"]
   include_file = []
   kill_delay = "0s"
@@ -35,6 +35,7 @@ tmp_dir = "tmp"
   watcher = "cyan"
 
 [log]
+  level = "debug"
   main_only = false
   silent = false
   time = false
