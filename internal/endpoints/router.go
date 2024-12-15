@@ -17,15 +17,15 @@ func InitRouter(config *config.Config, db *sqlx.DB) *gin.Engine {
 
 	bookHandler := setup.SetupBook(db)
 
-	v1 := router.Group("/v1")
-	{
-		v1.GET("/health", func(c *gin.Context) {
-			c.JSON(http.StatusOK, gin.H{
-				"message": "Hello, World!",
-				"status":  http.StatusOK,
-			})
-		})
+	router.GET("/", func (c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Funcionando com sucesso!",
+			"status":  http.StatusOK,
+		})	
+	})
 
+	v1 := router.Group("/v1")
+	{		
 		v1.POST("/books", bookHandler.CreateBook)
 		v1.GET("/books", bookHandler.GetBooks)
 		v1.GET("/books/:id", bookHandler.GetBookById)

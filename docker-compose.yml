@@ -6,6 +6,8 @@ services:
       target: dev
     container_name: microservice_catalog
     restart: always
+    ports:
+      - 8080:8080
     environment:
       - GIN_MODE=$GIN_MODE
       - APP_PORT=$APP_PORT
@@ -19,19 +21,15 @@ services:
     volumes:
       - .:/go/src/app
       - ~/.air:/root/.air
+      - ./logs/air:/go/src/app/build-errors.log
     depends_on:
       - postgres_db
     networks:
       - app-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/v1/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
   nginx:
     image: nginx:latest
-    container_name: support_gateway
+    container_name: proxy_gateway
     restart: always
     ports:
       - 80:80
@@ -45,7 +43,7 @@ services:
 
   postgres_db:
     image: postgres:16
-    container_name: database
+    container_name: postgres
     restart: always
     ports:
       - 5432:5432

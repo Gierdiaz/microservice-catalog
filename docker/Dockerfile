@@ -5,15 +5,14 @@ WORKDIR /go/src/app
 
 RUN go install github.com/air-verse/air@latest
 
-
-RUN apk add --no-cache bash curl git && \
-    curl -sSfL https://raw.githubusercontent.com/cosmtrek/air/master/install.sh | sh -s && \
-    mv ./bin/air /usr/local/bin/
+RUN apk add --no-cache bash curl git
 
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify && go mod tidy
 
 COPY . .
+
+COPY .air.toml .air.toml
 
 CMD ["air", "-c", ".air.toml"]
 

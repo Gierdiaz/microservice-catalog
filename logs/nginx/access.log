@@ -8,3 +8,6 @@
 172.18.0.1 - - [15/Dec/2024:02:36:10 +0000] "GET /v1/health HTTP/1.1" 200 40 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0"
 172.18.0.1 - - [15/Dec/2024:03:10:04 +0000] "GET /v1/healthy HTTP/1.1" 404 18 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0"
 172.18.0.1 - - [15/Dec/2024:03:10:10 +0000] "GET /v1/health HTTP/1.1" 200 40 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0"
+172.18.0.1 - - [15/Dec/2024:15:09:25 +0000] "GET / HTTP/1.1" 404 18 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0"
+172.18.0.1 - - [15/Dec/2024:15:09:34 +0000] "GET /v1/health HTTP/1.1" 200 40 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0"
+172.18.0.1 - - [15/Dec/2024:15:12:10 +0000] "GET / HTTP/1.1" 404 18 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0"
