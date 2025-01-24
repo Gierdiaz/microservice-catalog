@@ -11,11 +11,11 @@ import (
 
 func InitDatabase(config *config.Config) (*sqlx.DB, error) {
 
-	dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", 
-		config.Database.DB_HOST, 
-		config.Database.DB_PORT, 
-		config.Database.DB_USERNAME, 
-		config.Database.DB_DATABASE, 
+	dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
+		config.Database.DB_HOST,
+		config.Database.DB_PORT,
+		config.Database.DB_USERNAME,
+		config.Database.DB_DATABASE,
 		config.Database.DB_PASSWORD,
 	)
 

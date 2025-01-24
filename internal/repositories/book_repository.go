@@ -1,8 +1,8 @@
 package repositories
 
 import (
-	"github.com/jmoiron/sqlx"
 	"github.com/Gierdiaz/Book/internal/models"
+	"github.com/jmoiron/sqlx"
 )
 
 type BookRepository struct {
