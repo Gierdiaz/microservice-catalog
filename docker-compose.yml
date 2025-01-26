@@ -5,6 +5,7 @@ services:
       dockerfile: docker/Dockerfile
       target: dev
     container_name: microservice_catalog
+    command: ./docker/wait-for-db.sh && go run cmd/main.go migrate-fresh
     restart: always
     ports:
       - 8080:8080
@@ -22,6 +23,7 @@ services:
       - .:/go/src/app
       - ~/.air:/root/.air
       - ./logs/air:/go/src/app/build-errors.log
+      - ./migrations:/go/src/app/migrations
     depends_on:
       - postgres_db
     networks:
@@ -57,7 +59,7 @@ services:
       app-network:
         aliases:
           - pgsql
-
+          
 networks:
   app-network:
     driver: bridge

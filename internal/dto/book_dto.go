@@ -1,22 +1,62 @@
 package dto
 
-import "github.com/Gierdiaz/Book/internal/models"
+import (
+	"time"
+
+	"github.com/Gierdiaz/Book/internal/models"
+	"github.com/google/uuid"
+)
 
 type BookDTO struct {
-	ID        string `json:"id"`
-	Name      string `json:"name"`
-	Title     string `json:"title"`
-	Author    string `json:"author"`
-	Genre     string `json:"genre"`
-	Price     int    `json:"price"`
-	Quantity  int    `json:"quantity"`
-	Year      int    `json:"year"`
-	Available bool   `json:"available"`
+	ID        uuid.UUID  `json:"id,omitempty"`
+	Name      string     `json:"name" binding:"required"`
+	Title     string     `json:"title" binding:"required"`
+	Author    string     `json:"author" binding:"required"`
+	Genre     string     `json:"genre" binding:"required"`
+	Price     int        `json:"price" binding:"required,gt=0"`
+	Quantity  int        `json:"quantity" binding:"required,gt=0"`
+	Year      int        `json:"year" binding:"required,gt=0"`
+	Available bool       `json:"available"`
+	CreatedAt time.Time  `json:"created_at,omitempty"`
+	UpdatedAt time.Time  `json:"updated_at,omitempty"`
+	DeletedAt *time.Time `json:"deleted_at,omitempty"`
 }
 
-func ToBookDTO(b *models.Book) BookDTO {
+// ToBookDTO converte um modelo Book em um BookDTO
+func ToBookDTO(book *models.Book) BookDTO {
 	return BookDTO{
-		ID:        b.ID.String(),
+		ID:        book.ID,
+		Name:      book.Name,
+		Title:     book.Title,
+		Author:    book.Author,
+		Genre:     book.Genre,
+		Price:     book.Price,
+		Quantity:  book.Quantity,
+		Year:      book.Year,
+		Available: book.Available,
+		CreatedAt: book.CreatedAt,
+		UpdatedAt: book.UpdatedAt,
+	}
+}
+
+// ToBookDTOs converte uma lista de modelos Book para uma lista de BookDTO
+func ToBookDTOs(books []models.Book) []BookDTO {
+	var bookDTOs []BookDTO
+	for _, book := range books {
+		bookDTOs = append(bookDTOs, ToBookDTO(&book))
+	}
+	return bookDTOs
+}
+
+func (b *BookDTO) ToModel() (*models.Book, error) {
+	// Garantindo que o ID seja um UUID válido
+	id, err := uuid.NewRandom()
+	if err != nil {
+		return nil, err
+	}
+
+	return &models.Book{
+		ID:        id,
 		Name:      b.Name,
 		Title:     b.Title,
 		Author:    b.Author,
@@ -24,14 +64,6 @@ func ToBookDTO(b *models.Book) BookDTO {
 		Price:     b.Price,
 		Quantity:  b.Quantity,
 		Year:      b.Year,
-		Available: b.IsAvailable(),
-	}
-}
-
-func ToBookDTOs(books []models.Book) []BookDTO {
-	dtos := make([]BookDTO, len(books))
-	for i, b := range books {
-		dtos[i] = ToBookDTO(&b)
-	}
-	return dtos
+		Available: b.Available,
+	}, nil
 }

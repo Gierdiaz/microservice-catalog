@@ -2,8 +2,10 @@ package services
 
 import (
 	"github.com/Gierdiaz/Book/internal/dto"
-	"github.com/Gierdiaz/Book/internal/models"
+
 	"github.com/Gierdiaz/Book/internal/repositories"
+	"github.com/Gierdiaz/Book/internal/validator"
+	"github.com/google/uuid"
 )
 
 type BookService struct {
@@ -18,23 +20,46 @@ func (s *BookService) GetBooks() ([]dto.BookDTO, error) {
 	return dto.ToBookDTOs(books), nil
 }
 
-func (s *BookService) GetBookById(id string) (*dto.BookDTO, error) {
+func (s *BookService) GetBookById(id uuid.UUID) (dto.BookDTO, error) {
 	book, err := s.Repo.GetById(id)
 	if err != nil {
-		return nil, err
+		return dto.BookDTO{}, err 
 	}
-	bookDTO := dto.ToBookDTO(book)
-	return &bookDTO, nil
+	return dto.ToBookDTO(book), nil 
 }
 
-func (s *BookService) CreateBook(book *models.Book) error {
+
+// Para criação de Book, converte DTO para modelo, valida e cria
+func (s *BookService) CreateBook(bookDTO *dto.BookDTO) error {
+	// Valida o DTO
+	if err := validator.ValidateBookDTO(bookDTO); err != nil {
+		return err
+	}
+
+	book, err := bookDTO.ToModel()
+	if err != nil {
+		return err
+	}
+
+	// Cria o livro no repositório
 	return s.Repo.Create(book)
 }
 
-func (s *BookService) UpdateBook(book *models.Book) error {
+func (s *BookService) UpdateBook(bookDTO *dto.BookDTO) error {
+	// Valida o DTO
+	if err := validator.ValidateBookDTO(bookDTO); err != nil {
+		return err
+	}
+
+	book, err := bookDTO.ToModel()
+	if err != nil {
+		return err
+	}
+
+	// Atualiza o livro no repositório
 	return s.Repo.Update(book)
 }
 
-func (s *BookService) DeleteBook(id string) error {
+func (s *BookService) DeleteBook(id uuid.UUID) error {
 	return s.Repo.Delete(id)
 }

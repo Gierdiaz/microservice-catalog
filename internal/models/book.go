@@ -1,24 +1,27 @@
 package models
 
 import (
+	"database/sql"
 	"errors"
 	"time"
-
 	"github.com/google/uuid"
 )
 
 type Book struct {
-	ID        uuid.UUID `json:"id"`
-	Name      string    `json:"name"`
-	Title     string    `json:"title"`
-	Author    string    `json:"author"`
-	Genre     string    `json:"genre"`
-	Price     int       `json:"price"`
-	Quantity  int       `json:"quantity"`
-	Year      int       `json:"year"`
-	Available bool      `json:"available"`
-	CreatedAt time.Time `json:"created_at"`
+	ID        uuid.UUID     `db:"id"`
+	Name      string        `db:"name"`
+	Title     string        `db:"title"`
+	Author    string        `db:"author"`
+	Genre     string        `db:"genre"`
+	Price     int           `db:"price"`
+	Quantity  int           `db:"quantity"`
+	Year      int           `db:"year"`
+	Available bool          `db:"available"`
+	CreatedAt time.Time     `db:"created_at"`
+	UpdatedAt time.Time     `db:"updated_at"`
+	DeletedAt sql.NullTime  `db:"deleted_at"`
 }
+
 
 func NewBook(name, title, author, genre string, price, quantity, year int) (*Book, error) {
 	if name == "" || title == "" || author == "" {
@@ -48,6 +51,7 @@ func NewBook(name, title, author, genre string, price, quantity, year int) (*Boo
 		Year:      year,
 		Available: quantity > 0,
 		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}, nil
 }
 
@@ -64,4 +68,8 @@ func (b *Book) ApplyDiscount(percent int) error {
 	b.Price -= discount
 
 	return nil
+}
+
+func (b *Book) IsDeleted() bool {
+	return b.DeletedAt.Valid
 }

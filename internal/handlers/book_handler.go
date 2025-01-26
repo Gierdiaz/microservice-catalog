@@ -2,11 +2,10 @@ package handlers
 
 import (
 	"net/http"
-
 	"github.com/Gierdiaz/Book/internal/dto"
-	"github.com/Gierdiaz/Book/internal/models"
 	"github.com/Gierdiaz/Book/internal/services"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type BookHandler struct {
@@ -14,19 +13,19 @@ type BookHandler struct {
 }
 
 func (h *BookHandler) CreateBook(c *gin.Context) {
-	var book models.Book
-
-	if err := c.ShouldBindJSON(&book); err != nil {
+	var bookDTO dto.BookDTO
+	if err := c.ShouldBindJSON(&bookDTO); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := h.Service.CreateBook(&book); err != nil {
+	// Cria o Book no serviço, passando o DTO
+	if err := h.Service.CreateBook(&bookDTO); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, dto.ToBookDTO(&book))
+	c.JSON(http.StatusCreated, bookDTO) // Retorna o DTO
 }
 
 func (h *BookHandler) GetBooks(c *gin.Context) {
@@ -41,7 +40,12 @@ func (h *BookHandler) GetBooks(c *gin.Context) {
 
 func (h *BookHandler) GetBookById(c *gin.Context) {
 	id := c.Param("id")
-	book, err := h.Service.GetBookById(id)
+	uuidID, err := uuid.Parse(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid UUID"})
+		return
+	}
+	book, err := h.Service.GetBookById(uuidID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -51,24 +55,29 @@ func (h *BookHandler) GetBookById(c *gin.Context) {
 }
 
 func (h *BookHandler) UpdateBook(c *gin.Context) {
-	var book models.Book
-
-	if err := c.ShouldBindJSON(&book); err != nil {
+	var bookDTO dto.BookDTO
+	if err := c.ShouldBindJSON(&bookDTO); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := h.Service.UpdateBook(&book); err != nil {
+	// Passa o DTO para o serviço para fazer a atualização
+	if err := h.Service.UpdateBook(&bookDTO); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.ToBookDTO(&book))
+	c.JSON(http.StatusOK, bookDTO)
 }
 
 func (h *BookHandler) DeleteBook(c *gin.Context) {
 	id := c.Param("id")
-	if err := h.Service.DeleteBook(id); err != nil {
+	uuidID, err := uuid.Parse(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid UUID"})
+		return
+	}
+	if err := h.Service.DeleteBook(uuidID); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

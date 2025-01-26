@@ -7,8 +7,9 @@ RUN go install github.com/air-verse/air@latest
 
 RUN apk add --no-cache bash curl git
 
-COPY go.mod go.sum ./
-RUN go mod download && go mod verify && go mod tidy
+COPY go.mod go.sum vendor/ ./
+
+RUN go mod verify
 
 COPY . .
 
@@ -21,11 +22,12 @@ FROM golang:1.23.4-alpine AS builder
 
 WORKDIR /go/src/app
 
-COPY go.mod go.sum ./
-RUN go mod download && go mod verify && go mod tidy
+COPY go.mod go.sum vendor/ ./
+RUN go mod verify
 
 COPY . .
 
+# Build para produção
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o server cmd/main.go
 
 FROM alpine:latest

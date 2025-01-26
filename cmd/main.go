@@ -20,6 +20,11 @@ func main() {
 	}
 	defer db.Close()
 
+	err = database.MigrateFresh(db)
+	if err != nil {
+		log.Fatalf("Erro ao rodar as migrações fresh: %v", err)
+	}
+
 	router := endpoints.InitRouter(config, db)
 	router.Run(":" + config.Server.APP_PORT)
 }
