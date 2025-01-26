@@ -27,3 +27,5 @@
 172.18.0.1 - - [25/Jan/2025:23:43:43 +0000] "GET /v1/books HTTP/1.1" 502 157 "-" "PostmanRuntime/7.43.0"
 172.18.0.1 - - [26/Jan/2025:04:24:19 +0000] "GET /v1/books HTTP/1.1" 500 65 "-" "PostmanRuntime/7.43.0"
 172.18.0.1 - - [26/Jan/2025:04:29:58 +0000] "GET /v1/books HTTP/1.1" 200 4 "-" "PostmanRuntime/7.43.0"
+172.18.0.1 - - [26/Jan/2025:04:36:14 +0000] "POST /v1/books HTTP/1.1" 201 272 "-" "PostmanRuntime/7.43.0"
+172.18.0.1 - - [26/Jan/2025:04:36:30 +0000] "GET /v1/books HTTP/1.1" 200 274 "-" "PostmanRuntime/7.43.0"
