@@ -25,6 +25,7 @@ func main() {
 		log.Fatalf("Erro ao rodar as migrações fresh: %v", err)
 	}
 
+
 	router := endpoints.InitRouter(config, db)
 	router.Run(":" + config.Server.APP_PORT)
 }

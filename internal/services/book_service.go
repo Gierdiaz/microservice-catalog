@@ -1,15 +1,15 @@
 package services
 
 import (
+	"github.com/Gierdiaz/Book/internal/contracts"
 	"github.com/Gierdiaz/Book/internal/dto"
 
-	"github.com/Gierdiaz/Book/internal/repositories"
 	"github.com/Gierdiaz/Book/internal/validator"
 	"github.com/google/uuid"
 )
 
 type BookService struct {
-	Repo *repositories.BookRepository
+	Repo contracts.BookRepositoryInterface
 }
 
 func (s *BookService) GetBooks() ([]dto.BookDTO, error) {

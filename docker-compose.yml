@@ -5,7 +5,7 @@ services:
       dockerfile: docker/Dockerfile
       target: dev
     container_name: microservice_catalog
-    command: ./docker/wait-for-db.sh && go run cmd/main.go migrate-fresh
+    command: air -c .air.toml && ./docker/wait-for-db.sh
     restart: always
     ports:
       - 8080:8080
