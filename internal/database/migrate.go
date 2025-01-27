@@ -36,6 +36,7 @@ func RunMigrations(db *sqlx.DB) error {
 
 // remove todas as tabelas e reaplica todas as migrações
 func MigrateFresh(db *sqlx.DB) error {
+
 	log.Println("Resetando banco de dados (Drop e reaplicação)...")
 	driver, err := postgres.WithInstance(db.DB, &postgres.Config{})
 	if err != nil {
@@ -61,7 +62,6 @@ func MigrateFresh(db *sqlx.DB) error {
 		return fmt.Errorf("erro ao aplicar migrações fresh: %w", err)
 	}
 	
-
 	log.Println("Banco de dados resetado e migrações reaplicadas com sucesso")
 	return nil
 }

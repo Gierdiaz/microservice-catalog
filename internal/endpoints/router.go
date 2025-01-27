@@ -19,7 +19,7 @@ func InitRouter(config *config.Config, db *sqlx.DB) *gin.Engine {
 
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "Funcionando com sucesso!", 
+			"message": "Funcionando com sucesso!",
 			"status":  http.StatusOK,
 		})
 	})

@@ -19,13 +19,12 @@ func (h *BookHandler) CreateBook(c *gin.Context) {
 		return
 	}
 
-	// Cria o Book no serviço, passando o DTO
 	if err := h.Service.CreateBook(&bookDTO); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, bookDTO) // Retorna o DTO
+	c.JSON(http.StatusCreated, bookDTO)
 }
 
 func (h *BookHandler) GetBooks(c *gin.Context) {

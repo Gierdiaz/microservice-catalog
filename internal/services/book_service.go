@@ -23,11 +23,10 @@ func (s *BookService) GetBooks() ([]dto.BookDTO, error) {
 func (s *BookService) GetBookById(id uuid.UUID) (dto.BookDTO, error) {
 	book, err := s.Repo.GetById(id)
 	if err != nil {
-		return dto.BookDTO{}, err 
+		return dto.BookDTO{}, err
 	}
-	return dto.ToBookDTO(book), nil 
+	return dto.ToBookDTO(book), nil
 }
-
 
 // Para criação de Book, converte DTO para modelo, valida e cria
 func (s *BookService) CreateBook(bookDTO *dto.BookDTO) error {

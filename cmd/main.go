@@ -6,6 +6,7 @@ import (
 	"github.com/Gierdiaz/Book/config"
 	"github.com/Gierdiaz/Book/internal/database"
 	"github.com/Gierdiaz/Book/internal/endpoints"
+	
 )
 
 func main() {
@@ -24,7 +25,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("Erro ao rodar as migrações fresh: %v", err)
 	}
-
 
 	router := endpoints.InitRouter(config, db)
 	router.Run(":" + config.Server.APP_PORT)

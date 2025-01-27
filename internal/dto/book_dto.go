@@ -13,7 +13,7 @@ type BookDTO struct {
 	Title     string     `json:"title" binding:"required"`
 	Author    string     `json:"author" binding:"required"`
 	Genre     string     `json:"genre" binding:"required"`
-	Price     int        `json:"price" binding:"required,gt=0"`
+	Price     float64    `json:"price" binding:"required,gt=0"`
 	Quantity  int        `json:"quantity" binding:"required,gt=0"`
 	Year      int        `json:"year" binding:"required,gt=0"`
 	Available bool       `json:"available"`

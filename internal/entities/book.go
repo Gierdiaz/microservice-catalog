@@ -14,7 +14,7 @@ type Book struct {
 	Title     string       `db:"title"`
 	Author    string       `db:"author"`
 	Genre     string       `db:"genre"`
-	Price     int          `db:"price"`
+	Price     float64      `db:"price"`
 	Quantity  int          `db:"quantity"`
 	Year      int          `db:"year"`
 	Available bool         `db:"available"`
@@ -23,7 +23,7 @@ type Book struct {
 	DeletedAt sql.NullTime `db:"deleted_at"`
 }
 
-func NewBook(name, title, author, genre string, price, quantity, year int) (*Book, error) {
+func NewBook(name, title, author, genre string, price float64, quantity, year int) (*Book, error) {
 	if name == "" || title == "" || author == "" {
 		return nil, errors.New("name, title, and author are required")
 	}
@@ -64,7 +64,7 @@ func (b *Book) ApplyDiscount(percent int) error {
 		return errors.New("percent must be between 0 and 100")
 	}
 
-	discount := (b.Price * percent) / 100
+	discount := (b.Price * float64(percent)) / 100
 	b.Price -= discount
 
 	return nil
