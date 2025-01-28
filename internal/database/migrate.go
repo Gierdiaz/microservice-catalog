@@ -22,6 +22,7 @@ func RunMigrations(db *sqlx.DB) error {
 		"postgres",
 		driver,
 	)
+
 	if err != nil {
 		return fmt.Errorf("erro ao configurar migração: %w", err)
 	}

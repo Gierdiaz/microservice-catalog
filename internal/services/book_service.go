@@ -8,8 +8,14 @@ import (
 	"github.com/google/uuid"
 )
 
+// Estrutura principal do serviço de livros
 type BookService struct {
 	Repo contracts.BookRepositoryInterface
+}
+
+// Construtor para inicializar o BookService
+func NewBookService(repo contracts.BookRepositoryInterface) *BookService {
+	return &BookService{Repo: repo}
 }
 
 func (s *BookService) GetBooks() ([]dto.BookDTO, error) {
