@@ -56,12 +56,12 @@ func MigrateFresh(db *sqlx.DB) error {
 		log.Printf("Erro ao rodar Down: %v", err)
 		return fmt.Errorf("erro ao limpar banco de dados: %w", err)
 	}
-	
+
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
 		log.Printf("Erro ao rodar Up: %v", err)
 		return fmt.Errorf("erro ao aplicar migrações fresh: %w", err)
 	}
-	
+
 	log.Println("Banco de dados resetado e migrações reaplicadas com sucesso")
 	return nil
 }

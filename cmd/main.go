@@ -6,7 +6,6 @@ import (
 	"github.com/Gierdiaz/Book/config"
 	"github.com/Gierdiaz/Book/internal/database"
 	"github.com/Gierdiaz/Book/internal/endpoints"
-	
 )
 
 func main() {
@@ -28,4 +27,5 @@ func main() {
 
 	router := endpoints.InitRouter(config, db)
 	router.Run(":" + config.Server.APP_PORT)
+
 }

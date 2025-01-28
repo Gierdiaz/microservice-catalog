@@ -12,7 +12,7 @@ run:
 ## Roda os testes
 test:
 	go test ./...
-
+	
 ## Formata arquivos .go
 fmt:
 	go fmt ./...
