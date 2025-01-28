@@ -1,2 +1,3 @@
 DROP TABLE IF EXISTS books;
 DROP EXTENSION IF EXISTS "pgcrypto";
+

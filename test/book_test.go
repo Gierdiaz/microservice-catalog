@@ -2,200 +2,159 @@ package test
 
 import (
 	"testing"
+	"time"
 
 	"github.com/Gierdiaz/Book/internal/dto"
 	"github.com/Gierdiaz/Book/internal/entities"
-	"github.com/google/uuid"
-
 	"github.com/Gierdiaz/Book/internal/services"
+	"github.com/google/uuid"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
-// Mock do repositório de livros
+// MockBookRepository é uma implementação mockada de BookRepositoryInterface
 type MockBookRepository struct {
-	Books []entities.Book
+	mock.Mock
 }
 
-// Implementação do método de criação no repositório mockado
-func (repo *MockBookRepository) CreateBook(book *entities.Book) error {
-	repo.Books = append(repo.Books, *book)
-	return nil
+func (m *MockBookRepository) Create(book *entities.Book) error {
+	args := m.Called(book)
+	return args.Error(0)
 }
 
-// Implementação do método de obtenção de livro por ID no repositório mockado
-func (repo *MockBookRepository) GetBookById(id uuid.UUID) (*entities.Book, error) {
-	for _, book := range repo.Books {
-		if book.Id == uuid.UUID(id) {
-			return &book, nil
-		}
-	}
-	return nil, nil
+func (m *MockBookRepository) GetAll() ([]entities.Book, error) {
+	args := m.Called()
+	return args.Get(0).([]entities.Book), args.Error(1)
 }
 
-// Implementação do método de atualização no repositório mockado
-func (repo *MockBookRepository) UpdateBook(book *entities.Book) error {
-	for i, b := range repo.Books {
-		if b.Id == book.Id {
-			repo.Books[i] = *book
-			return nil
-		}
-	}
-	return nil
+func (m *MockBookRepository) GetById(id uuid.UUID) (*entities.Book, error) {
+	args := m.Called(id)
+	return args.Get(0).(*entities.Book), args.Error(1)
 }
 
-// Implementação do método de exclusão no repositório mockado
-func (repo *MockBookRepository) DeleteBook(id uuid.UUID) error {
-	for i, book := range repo.Books {
-		if book.Id == id {
-			repo.Books = append(repo.Books[:i], repo.Books[i+1:]...)
-			return nil
-		}
-	}
-	return nil
+func (m *MockBookRepository) Update(book *entities.Book) error {
+	args := m.Called(book)
+	return args.Error(0)
 }
 
-// Teste de criação de livro
+func (m *MockBookRepository) Delete(id uuid.UUID) error {
+	args := m.Called(id)
+	return args.Error(0)
+}
+
 func TestCreateBook(t *testing.T) {
-	// Configurar repositório mockado e serviço
-	repo := &MockBookRepository{}
-	service := services.BookService{Repo: repo}
+	mockRepo := new(MockBookRepository)
+	service := services.NewBookService(mockRepo)
 
-	// Criar livro
-	bookDTO := dto.BookDTO{
-		Name:      "Livro de Teste",
-		Title:     "Título Teste",
-		Author:    "Autor Teste",
-		Genre:     "Ficção",
-		Price:     19.99,
+	book := &entities.Book{
+		Id:        uuid.New(),
+		Name:      "Test Book",
+		Title:     "Learning Go",
+		Author:    "John Doe",
+		Genre:     "Programming",
+		Price:     29.99,
 		Quantity:  10,
-		Year:      2023,
+		Year:      2024,
 		Available: true,
-	}
-	err := service.CreateBook(&bookDTO)
-	if err != nil {
-		t.Fatalf("Error creating book: %v", err)
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 
-	// Validar criação no repositório mockado
-	if len(repo.Books) != 1 {
-		t.Fatalf("Expected 1 book in repository, Got: %d", len(repo.Books))
-	}
+	mockRepo.On("Create", book).Return(nil)
 
-	// Validar dados
-	book := repo.Books[0]
-	if book.Name != bookDTO.Name || book.Title != bookDTO.Title || book.Author != bookDTO.Author {
-		t.Fatalf("Book data mismatch. Expected: %+v, Got: %+v", bookDTO, book)
-	}
+	err := service.CreateBook(&dto.BookDTO{
+		Name:      "Test Book",
+		Title:     "Learning Go",
+		Author:    "John Doe",
+		Genre:     "Programming",
+		Price:     29.99,
+		Quantity:  10,
+		Year:      2024,
+		Available: true,
+	})
+
+	assert.NoError(t, err)
+	mockRepo.AssertExpectations(t)
 }
 
-// Teste de recuperação de livro
+func TestGetBooks(t *testing.T) {
+	mockRepo := new(MockBookRepository)
+	service := services.NewBookService(mockRepo)
+
+	books := []entities.Book{
+		{
+			Id:        uuid.New(),
+			Name:      "Test Book 1",
+			Title:     "Go Basics",
+			Author:    "Jane Doe",
+			Genre:     "Programming",
+			Price:     19.99,
+			Quantity:  5,
+			Year:      2022,
+			Available: true,
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		},
+		{
+			Id:        uuid.New(),
+			Name:      "Test Book 2",
+			Title:     "Advanced Go",
+			Author:    "John Doe",
+			Genre:     "Programming",
+			Price:     39.99,
+			Quantity:  3,
+			Year:      2023,
+			Available: true,
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		},
+	}
+
+	mockRepo.On("GetAll").Return(books, nil)
+
+	result, err := service.GetBooks()
+
+	assert.NoError(t, err)
+	assert.Equal(t, len(books), len(result))
+	mockRepo.AssertExpectations(t)
+}
+
 func TestGetBookById(t *testing.T) {
-	// Configurar repositório mockado e serviço
-	repo := &MockBookRepository{}
-	service := services.BookService{Repo: repo}
+	mockRepo := new(MockBookRepository)
+	service := services.NewBookService(mockRepo)
 
-	// Criar livro
-	bookDTO := dto.BookDTO{
-		Name:      "Livro de Teste",
-		Title:     "Título Teste",
-		Author:    "Autor Teste",
-		Genre:     "Ficção",
-		Price:     19.99,
+	book := &entities.Book{
+		Id:        uuid.New(),
+		Name:      "Test Book",
+		Title:     "Learning Go",
+		Author:    "John Doe",
+		Genre:     "Programming",
+		Price:     29.99,
 		Quantity:  10,
-		Year:      2023,
+		Year:      2024,
 		Available: true,
-	}
-	err := service.CreateBook(&bookDTO)
-	if err != nil {
-		t.Fatalf("Error creating book: %v", err)
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 
-	// Recuperar o ID do livro
-	book := repo.Books[0]
+	mockRepo.On("GetById", book.Id).Return(book, nil)
 
-	// Recuperar o livro pelo ID
-	gotBook, err := service.GetBookById(book.Id)
-	if err != nil {
-		t.Fatalf("Error retrieving book by ID: %v", err)
-	}
+	result, err := service.GetBookById(book.Id)
 
-	// Validar dados
-	if gotBook.Name != bookDTO.Name || gotBook.Title != bookDTO.Title || gotBook.Author != bookDTO.Author {
-		t.Fatalf("Retrieved book data mismatch. Expected: %+v, Got: %+v", bookDTO, gotBook)
-	}
+	assert.NoError(t, err)
+	assert.Equal(t, book, result)
+	mockRepo.AssertExpectations(t)
 }
 
-// Teste de atualização de livro
-func TestUpdateBook(t *testing.T) {
-	// Configurar repositório mockado e serviço
-	repo := &MockBookRepository{}
-	service := services.BookService{Repo: repo}
-
-	// Criar livro
-	bookDTO := dto.BookDTO{
-		Name:      "Livro de Teste",
-		Title:     "Título Teste",
-		Author:    "Autor Teste",
-		Genre:     "Ficção",
-		Price:     19.99,
-		Quantity:  10,
-		Year:      2023,
-		Available: true,
-	}
-	err := service.CreateBook(&bookDTO)
-	if err != nil {
-		t.Fatalf("Error creating book: %v", err)
-	}
-
-	// Recuperar o livro
-	book := repo.Books[0]
-
-	// Atualizar o livro
-	bookDTO.Name = "Livro Atualizado"
-	err = service.UpdateBook(&bookDTO)
-	if err != nil {
-		t.Fatalf("Error updating book: %v", err)
-	}
-
-	// Validar atualização no repositório mockado
-	updatedBook := repo.Books[0]
-	if updatedBook.Name != "Livro Atualizado" {
-		t.Fatalf("Book not updated. Expected: 'Livro Atualizado', Got: '%s'", updatedBook.Name)
-	}
-}
-
-// Teste de exclusão de livro
 func TestDeleteBook(t *testing.T) {
-	// Configurar repositório mockado e serviço
-	repo := &MockBookRepository{}
-	service := services.BookService{Repo: repo}
+	mockRepo := new(MockBookRepository)
+	service := services.NewBookService(mockRepo)
 
-	// Criar livro
-	bookDTO := dto.BookDTO{
-		Name:      "Livro de Teste",
-		Title:     "Título Teste",
-		Author:    "Autor Teste",
-		Genre:     "Ficção",
-		Price:     19.99,
-		Quantity:  10,
-		Year:      2023,
-		Available: true,
-	}
-	err := service.CreateBook(&bookDTO)
-	if err != nil {
-		t.Fatalf("Error creating book: %v", err)
-	}
+	bookID := uuid.New()
+	mockRepo.On("Delete", bookID).Return(nil)
 
-	// Recuperar o livro
-	book := repo.Books[0]
+	err := service.DeleteBook(bookID)
 
-	// Excluir o livro
-	err = service.DeleteBook(book.Id)
-	if err != nil {
-		t.Fatalf("Error deleting book: %v", err)
-	}
-
-	// Validar exclusão no repositório mockado
-	if len(repo.Books) != 0 {
-		t.Fatalf("Book not deleted. Expected 0 books, Got: %d", len(repo.Books))
-	}
+	assert.NoError(t, err)
+	mockRepo.AssertExpectations(t)
 }

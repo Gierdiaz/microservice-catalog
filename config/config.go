@@ -29,12 +29,6 @@ func LoadConfig() (*Config, error) {
 		return nil, fmt.Errorf("error loading .env file: %v", err)
 	}
 
-	if os.Getenv("APP_ENV") == "test" {
-		if err := godotenv.Load(".env.test"); err != nil {
-			return nil, fmt.Errorf("error loading .env.test file: %v", err)
-		}
-	}
-
 	config := &Config{
 		Server: Server{
 			APP_PORT: os.Getenv("APP_PORT"),
